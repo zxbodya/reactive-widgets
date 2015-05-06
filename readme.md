@@ -38,14 +38,15 @@ For now, application includes following:
 1. start webpack dev server for client-side bundle `npm run dev-server`(it will watch for changes and automatically recompile scripts and reload page)
 2. start webpack watcher for server bundle `npm run watch-prerender`
 3. preprender server, using pm2:
-   * start `pm2 start --watch --name widgets ./build/server/server.js` (it will automatically watch for changes in compiled scrip and reload)
-   * stop `pm2 delete widgets`
+  * start `pm2 start --watch --name widgets ./build/server/server.js` (it will automatically watch for changes in compiled scrip and reload)
+  * stop `pm2 delete widgets`
 4. test it `npm run test`
-4. lint it `npm run lint`
+5. lint it `npm run lint`
 
 ### PHP server demo that will use implemented widgets
 
 example is in php folder, to try it:
+
 1. `composer install` install dependencies, using composer
 2. start php built in server `php -S 127.0.0.1:4000`
 3. navigate to http://127.0.0.1/ to see results
