@@ -25,6 +25,7 @@ class Prerender
         if ($this->isEnabled) {
             return "<div id=\"{$id}\"><!-- prerender:{$id} --></div>";
         }
+
         return "<div id=\"{$id}\"></div>";
     }
 
@@ -45,7 +46,8 @@ class Prerender
                 [
                     'json' => [
                         'components' => $this->_elements
-                    ]
+                    ],
+                    'timeout' => 3 //seconds
                 ]
             );
 

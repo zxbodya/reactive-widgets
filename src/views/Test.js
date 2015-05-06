@@ -5,14 +5,21 @@ const {Component, PropTypes} = React;
 
 class Test extends Component {
   render() {
+    let items = this.props.list.map((item, i)=>(
+      <li key={i}>{item.name}</li>
+    ));
     return (
-      <span>Hello {this.props.name}</span>
+      <div>
+        <span>Hello {this.props.name}</span>
+        <ul>{items}</ul>
+      </div>
     );
   }
 }
 
 Test.propTypes = {
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
+  list: PropTypes.array.isRequired
 };
 
 module.exports = Test;

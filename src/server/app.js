@@ -19,6 +19,21 @@ const appInjector = new di.Injector();
 const observableObject = require('./../utils/observableObject');
 const registry = require('../registry');
 
+app.get('/data', function (req, res) {
+  res.json([
+    {name: 'item 1'},
+    {name: 'item 2'},
+    {name: 'item 3'},
+    {name: 'item 4'},
+    {name: 'item 5'},
+    {name: 'item 6'},
+    {name: 'item 7'},
+    {name: 'item 8'},
+    {name: 'item 9'},
+    {name: 'item 10'}
+  ]);
+});
+
 app.post('/render', function (req, res) {
   const injector = appInjector.createChild();
   const {components} = req.body;
