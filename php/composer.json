@@ -1,0 +1,13 @@
+{
+  "name": "zxbodya/react-widgets-example",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bogdan Savluk",
+      "email": "savluk.bogdan@gmail.com"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "~5.0"
+  }
+}
