@@ -10,7 +10,7 @@ class Test extends Component {
     ));
     return (
       <div>
-        <span>Hello {this.props.name}</span>
+        <h1>Hello {this.props.name}</h1>
         <ul>{items}</ul>
       </div>
     );
