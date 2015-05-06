@@ -1,4 +1,4 @@
-## Reactive widgets 
+## Reactive widgets [![Build Status](https://travis-ci.org/zxbodya/reactive-widgets.svg?branch=master)](https://travis-ci.org/zxbodya/reactive-widgets)
 
 Application starter template, for implementing isomorphic widgets(same code for both server and client side), using RxJS and React
 
