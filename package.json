@@ -11,7 +11,7 @@
     "build": "webpack --config webpack-production.config.js --progress --profile --colors",
     "watch-prerender": "webpack --watch --config webpack-dev-prerender.config --progress --profile --colors",
     "server": "pm2 ./build/server/server.js",
-    "test": "karma start --single-run",
+    "test": "karma start",
     "lint": "eslint ./src/"
   },
   "description": "Project template for building isomorphic widgets using reactjs",
@@ -29,6 +29,7 @@
     "jsx-loader": "^0.13.2",
     "karma": "^0.12.31",
     "karma-chrome-launcher": "^0.1.8",
+    "karma-cli": "0.0.4",
     "karma-jasmine": "^0.3.5",
     "karma-sourcemap-loader": "^0.3.4",
     "karma-webpack": "^1.5.1",
