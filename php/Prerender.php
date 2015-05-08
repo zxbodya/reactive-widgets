@@ -5,6 +5,7 @@ use GuzzleHttp\Client;
 class Prerender
 {
     private $serverUrl;
+    private $_index = 0;
     private $_elements = [];
     public $isEnabled = false;
 
@@ -19,9 +20,12 @@ class Prerender
     }
 
 
-    public function render($id, $data)
+    public function render($name, $data = [])
     {
-        $this->_elements[$id] = $data;
+        $id = 'react_' . $this->_index;
+        $this->_index += 1;
+
+        $this->_elements[$id] = ['component' => $name, 'params' => $data];
         if ($this->isEnabled) {
             return "<div id=\"{$id}\"><!-- prerender:{$id} --></div>";
         }
@@ -29,51 +33,72 @@ class Prerender
         return "<div id=\"{$id}\"></div>";
     }
 
-
     public function bootstrapScript()
     {
-        $data = json_encode($this->_elements);
+        return '<!-- prerender:bootstrap -->';
+    }
 
-        return "<script>window.bootstrapData=$data;</script>";
+    public function bundleScript()
+    {
+        return '<!-- prerender:scripts -->';
     }
 
     public function replaceResults($html)
     {
-        if ($this->isEnabled) {
+        if ($this->isEnabled && $this->_index !== 0) {
             $client = new Client(['base_url' => $this->serverUrl]);
-            $response = $client->post(
-                '/render',
-                [
-                    'json' => [
-                        'components' => $this->_elements
-                    ],
-                    'timeout' => 3 //seconds
-                ]
-            );
+            try {
+                $response = $client->post(
+                    '/render',
+                    [
+                        'json' => $this->_elements,
+                        'timeout' => 3 //seconds
+                    ]
+                );
 
 
-            $prerenderResult = $response->json();
-
-            $renderedBlocks = $prerenderResult['components'];
-
-            $result = preg_replace_callback(
-                '/<!-- prerender:([^ ]+) -->/i',
-                function ($matches) use ($renderedBlocks) {
-                    $id = $matches[1];
-                    if (isset($renderedBlocks[$id])) {
-                        $content = $renderedBlocks[$id];
-
-                        return $content;
-                    } else {
-                        return '';
-                    }
-                },
-                $html
-            );
-
-            return $result;
+                $renderedBlocks = $response->json();
+            } catch (\Exception $e) {
+                // todo: log somewhere
+                // but while components are isomorphic,
+                // this will work event if we ignore an error
+                $renderedBlocks = [];
+            }
+        } else {
+            $renderedBlocks = [];
         }
 
-        return $html;
+        $result = preg_replace_callback(
+            '/<!-- prerender:([^ ]+) -->/i',
+            function ($matches) use ($renderedBlocks) {
+                $id = $matches[1];
+                if (isset($renderedBlocks[$id])) {
+                    $content = $renderedBlocks[$id];
+
+                    return $content;
+                } else {
+                    $result = '';
+                    switch ($id) {
+                        case 'bootstrap':
+                            $data = json_encode($this->_elements);
+                            $result = "<script>window.bootstrapData=$data;</script>";
+                            break;
+                        case 'scripts':
+                            $stats = json_decode(file_get_contents('../build/stats.json'));
+                            $publicPath = $stats->publicPath;
+                            $main = $stats->assetsByChunkName->main;
+                            $scriptUrl = $publicPath . (is_string($main) ? $main : $main[0]);
+
+                            $result = "<script src=\"$scriptUrl\"></script>";
+                            break;
+                    }
+
+                    return $result;
+                }
+            },
+            $html
+        );
+
+        return $result;
     }
 }

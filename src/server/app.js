@@ -16,10 +16,18 @@ const di = require('./../di');
 
 const appInjector = new di.Injector();
 
+appInjector.provide(require('../apiUrl'), ()=> {
+  return 'http://127.0.0.1:3000';
+});
+
 const observableObject = require('./../utils/observableObject');
 const registry = require('../registry');
 
 app.get('/data', function (req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+
   res.json([
     {name: 'item 1'},
     {name: 'item 2'},
@@ -36,43 +44,31 @@ app.get('/data', function (req, res) {
 
 app.post('/render', function (req, res) {
   const injector = appInjector.createChild();
-  const {components} = req.body;
 
-  const bootstrap = {};
-
-  Object.keys(registry).forEach(id=> {
-    let component = components[id];
-
-    if (component) {
-      bootstrap[id] = component;
-    }
-  });
-
-  di.provide(require('../stores/bootstrap'), ()=> {
-    return Rx.Observable.return(bootstrap);
-  });
-
+  const bootstrapData = req.body || {};
   const results = {};
-  Object.keys(registry).forEach(id=> {
-    if (components[id]) {
-      results[id] = injector
-        .get(registry[id])
-        .first()
-        .map(reactElement=>React.renderToString(reactElement));
-    }
+
+  Object.keys(bootstrapData).forEach(id=> {
+    let {component, params} = bootstrapData[id];
+    results[id] = injector
+      .get(registry[component])(params)
+      .first()
+      .map(reactElement=>React.renderToString(reactElement));
   });
 
   observableObject(results)
     .first()
-    .subscribe(renderedResults=>res.json({
-      components: renderedResults
-    }),
+    .subscribe(
+      renderedResults=>res.json(renderedResults),
 
-      error=>res.status(500).json({
-      error: 'Rendering error',
-      message: error.message,
-      stack: error.stack
-    })
+      error=> {
+      console.log(error);
+      res.status(500).json({
+        error: 'Rendering error',
+        message: error.message,
+        stack: error.stack
+      });
+    }
   );
 });
 
