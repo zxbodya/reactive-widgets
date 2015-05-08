@@ -22,10 +22,11 @@ appInjector.provide(require('../apiUrl'), ()=> {
 
 const observableObject = require('./../utils/observableObject');
 const registry = require('../registry');
+const rxComponentErrorHandler = require('../utils/rxComponentErrorHandler');
 
 app.get('/data', function (req, res) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
 
   res.json([
@@ -33,12 +34,7 @@ app.get('/data', function (req, res) {
     {name: 'item 2'},
     {name: 'item 3'},
     {name: 'item 4'},
-    {name: 'item 5'},
-    {name: 'item 6'},
-    {name: 'item 7'},
-    {name: 'item 8'},
-    {name: 'item 9'},
-    {name: 'item 10'}
+    {name: 'item 5'}
   ]);
 });
 
@@ -50,10 +46,19 @@ app.post('/render', function (req, res) {
 
   Object.keys(bootstrapData).forEach(id=> {
     let {component, params} = bootstrapData[id];
-    results[id] = injector
-      .get(registry[component])(params)
-      .first()
-      .map(reactElement=>React.renderToString(reactElement));
+    if (component in registry) {
+      results[id] = Rx.Observable
+        .return(registry[component])
+        .map(token=>injector.get(token))
+        .switchMap(component=>component(params))
+        .first()
+        .catch(rxComponentErrorHandler)
+        .map(reactElement=>React.renderToString(reactElement))
+        .catch((e)=>rxComponentErrorHandler(e)
+          .map(reactElement=>React.renderToString(reactElement)));
+    } else {
+      results[id] = Rx.Observable.return('Error: Component not found in registry');
+    }
   });
 
   observableObject(results)

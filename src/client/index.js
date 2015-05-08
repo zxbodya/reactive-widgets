@@ -6,9 +6,10 @@ const React = require('react');
 const di = require('./../di');
 const injector = new di.Injector();
 
-const registry = require('../registry');
+const rxComponentErrorHandler = require('../utils/rxComponentErrorHandler');
 
-var bootstrapData = window.bootstrapData || {};
+const registry = require('../registry');
+const bootstrapData = window.bootstrapData || {};
 
 Object.keys(bootstrapData)
   .forEach(elementId=> {
@@ -16,11 +17,16 @@ Object.keys(bootstrapData)
 
     let element = document.getElementById(elementId);
     if (element) {
-      injector
-        .get(registry[component])(params)
-        .distinctUntilChanged()
-        .subscribe(reactElement=> {
-          React.render(reactElement, element);
-        });
+      if (component in registry) {
+        Rx.Observable
+          .return(registry[component])
+          .map(token=>injector.get(token))
+          .switchMap(component=>component(params))
+          .distinctUntilChanged()
+          .catch(rxComponentErrorHandler)
+          .subscribe(reactElement=> {
+            React.render(reactElement, element);
+          });
+      }
     }
   });
