@@ -21,13 +21,13 @@ describe('DI Container', function () {
   });
 
   it('throws for non existing token', ()=> {
-    expect(()=>injector.get(1)).toThrow('provider not found');
+    expect(()=>injector.get(1)).toThrow(new Error('provider not found'));
   });
 
   it('throws for cyclic dependencies', ()=> {
     injector.provide(1, ()=>1, 2);
     injector.provide(2, ()=>2, 1);
-    expect(()=>injector.get(1)).toThrow('cyclic dependency');
+    expect(()=>injector.get(1)).toThrow(new Error('cyclic dependency'));
   });
 
   it('caches instance after creation', ()=> {

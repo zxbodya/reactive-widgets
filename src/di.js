@@ -49,7 +49,7 @@ class Injector {
    */
   deps(token, fromToken) {
     if (token === fromToken) {
-      throw 'cyclic dependency';
+      throw new Error('cyclic dependency');
     }
 
     let directDeps;
@@ -74,7 +74,7 @@ class Injector {
     if (this.parent) {
       return this.parent.deps(token, fromToken);
     } else {
-      throw 'provider not found';
+      throw new Error('provider not found');
     }
   }
 
