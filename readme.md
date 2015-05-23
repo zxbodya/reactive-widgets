@@ -49,4 +49,4 @@ example is in php folder, to try it:
 
 1. `composer install` install dependencies, using composer
 2. start php built in server `php -S 127.0.0.1:4000`
-3. navigate to http://127.0.0.1/ to see results
+3. navigate to http://127.0.0.1:4000/ to see results

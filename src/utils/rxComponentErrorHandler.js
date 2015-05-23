@@ -6,8 +6,14 @@ const {Observable} = Rx;
 
 module.exports = (error)=>
   Observable.return(
-    <div>
-      <p>{error.message}</p>
-      <pre>{error.stack}</pre>
-    </div>
+    class ErrorView extends React.Component {
+      render() {
+        return (
+          <div>
+            <p>{error.message}</p>
+            <pre>{error.stack}</pre>
+          </div>
+        );
+      }
+    }
   );

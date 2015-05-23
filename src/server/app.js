@@ -53,9 +53,9 @@ app.post('/render', function (req, res) {
         .switchMap(component=>component(params))
         .first()
         .catch(rxComponentErrorHandler)
-        .map(reactElement=>React.renderToString(reactElement))
+        .map(ReactComponent=>React.renderToString(<ReactComponent/>))
         .catch((e)=>rxComponentErrorHandler(e)
-          .map(reactElement=>React.renderToString(reactElement)));
+          .map(ReactComponent=>React.renderToString(<ReactComponent/>)));
     } else {
       results[id] = Rx.Observable.return('Error: Component not found in registry');
     }

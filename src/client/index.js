@@ -24,8 +24,8 @@ Object.keys(bootstrapData)
           .switchMap(component=>component(params))
           .distinctUntilChanged()
           .catch(rxComponentErrorHandler)
-          .subscribe(reactElement=> {
-            React.render(reactElement, element);
+          .subscribe(ReactComponent=> {
+            React.render(<ReactComponent/>, element);
           });
       }
     }
