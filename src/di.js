@@ -163,7 +163,7 @@ function annotate(factory, ...deps) {
   return provide(factory, factory, ...deps);
 }
 
-module.exports = {
+export default {
   annotate,
   provide,
   Injector

@@ -1,10 +1,7 @@
-'use strict';
+import React from 'react';
+import {Observable} from 'rx';
 
-const React = require('react');
-const Rx = require('rx');
-const {Observable} = Rx;
-
-module.exports = (error)=>
+export default (error)=>
   Observable.return(
     class ErrorView extends React.Component {
       render() {

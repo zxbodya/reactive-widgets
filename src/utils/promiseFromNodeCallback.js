@@ -1,5 +1,4 @@
-'use strict';
-module.exports = (fn, ...args)=> {
+export default (fn, ...args)=> {
   return new Promise((resolve, reject)=>
       fn(
         ...args,

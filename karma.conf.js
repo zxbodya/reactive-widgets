@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Mon Mar 23 2015 07:31:02 GMT+0200 (EET)
 
-module.exports = function (config) {
+export default function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -28,7 +28,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.js': ['webpack','sourcemap']
+      'test/**/*.js': ['webpack', 'sourcemap']
     },
 
 
@@ -57,7 +57,7 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: [ process.env.CONTINUOUS_INTEGRATION ? 'Firefox' : 'Chrome' ],
+    browsers: [process.env.CONTINUOUS_INTEGRATION ? 'Firefox' : 'Chrome'],
 
 
     // Continuous Integration mode
@@ -84,11 +84,11 @@ module.exports = function (config) {
     },
 
     plugins: [
-      require("karma-firefox-launcher"),
-      require("karma-chrome-launcher"),
-      require("karma-jasmine"),
-      require("karma-sourcemap-loader"),
-      require("karma-webpack")
+      require('karma-firefox-launcher'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine'),
+      require('karma-sourcemap-loader'),
+      require('karma-webpack')
     ]
   });
-};
+}

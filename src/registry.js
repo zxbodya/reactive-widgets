@@ -1,5 +1,5 @@
-'use strict';
+import test from './components/test';
 
-module.exports = {
-  test: require('./components/test')
+export default {
+  test: test
 };

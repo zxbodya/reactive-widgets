@@ -1,14 +1,13 @@
-'use strict';
+import Rx from 'rx';
+import React from 'react';
 
-const Rx = require('rx');
-const React = require('react');
-
-const di = require('./../di');
+import di from './../di';
 const injector = new di.Injector();
 
-const rxComponentErrorHandler = require('../utils/rxComponentErrorHandler');
+import rxComponentErrorHandler from '../utils/rxComponentErrorHandler';
 
-const registry = require('../registry');
+import registry from '../registry';
+
 const bootstrapData = window.bootstrapData || {};
 
 Object.keys(bootstrapData)

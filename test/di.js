@@ -1,5 +1,4 @@
-'use strict';
-const di = require('../src/di');
+import di from '../src/di';
 
 di.provide(10, ()=>10);
 di.provide(11, (ten)=>ten + 1, 10);

@@ -1,9 +1,7 @@
-'use strict';
-
-const Rx = require('rx');
-const express = require('express');
-const logger = require('morgan');
-const bodyParser = require('body-parser');
+import Rx from 'rx';
+import express from 'express';
+import logger from 'morgan';
+import bodyParser from 'body-parser';
 
 const app = express();
 
@@ -11,8 +9,8 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-const React = require('react');
-const di = require('./../di');
+import React from 'react';
+import di from './../di';
 
 const appInjector = new di.Injector();
 
@@ -20,9 +18,9 @@ appInjector.provide(require('../apiUrl'), ()=> {
   return 'http://127.0.0.1:3000';
 });
 
-const observableObject = require('./../utils/observableObject');
-const registry = require('../registry');
-const rxComponentErrorHandler = require('../utils/rxComponentErrorHandler');
+import observableObject from './../utils/observableObject';
+import registry from '../registry';
+import rxComponentErrorHandler from '../utils/rxComponentErrorHandler';
 
 app.get('/data', function (req, res) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -77,4 +75,4 @@ app.post('/render', function (req, res) {
   );
 });
 
-module.exports = app;
+export default app;

@@ -1,13 +1,10 @@
-'use strict';
+import di from './../di';
+import {Observable} from 'rx';
 
-const di = require('./../di');
-const Rx = require('rx');
-const {Observable} = Rx;
+import superagent from 'superagent';
+import promiseFromSuperAgent from '../utils/promiseFromSuperAgent';
 
-const superagent = require('superagent');
-const promiseFromSuperAgent = require('../utils/promiseFromSuperAgent');
-
-module.exports = di.annotate(
+export default di.annotate(
   (apiUrl)=> {
     const load = ()=> promiseFromSuperAgent(
       superagent

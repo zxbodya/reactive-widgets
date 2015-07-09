@@ -21,7 +21,7 @@
     // enable generators
     "generators": true,
     // enable modules and global strict mode
-    "modules": false,
+    "modules": true,
     // enable computed object literal property names
     "objectLiteralComputedProperties": true,
     // enable duplicate object literal properties in strict mode

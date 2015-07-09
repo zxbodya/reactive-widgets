@@ -1,5 +1,4 @@
-'use strict';
-const promiseFromNodeCallback = require('./promiseFromNodeCallback');
-module.exports = (request)=>
-  promiseFromNodeCallback(request.end.bind(request));
+import promiseFromNodeCallback from './promiseFromNodeCallback';
+
+export default (request)=>promiseFromNodeCallback(request.end.bind(request));
 

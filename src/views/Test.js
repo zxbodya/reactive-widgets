@@ -1,7 +1,4 @@
-'use strict';
-
-const React = require('react');
-const {Component, PropTypes} = React;
+import React, {Component, PropTypes} from 'react';
 
 class Test extends Component {
   render() {
@@ -22,4 +19,4 @@ Test.propTypes = {
   list: PropTypes.array.isRequired
 };
 
-module.exports = Test;
+export default Test;

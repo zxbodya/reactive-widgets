@@ -1,11 +1,9 @@
-'use strict';
+import di from '../di';
+import RxComponent from '../utils/RxComponent';
 
-const di = require('../di');
-const RxComponent = require('../utils/RxComponent');
+import Test from '../views/Test';
 
-const Test = require('../views/Test');
-
-module.exports = di.annotate(
+export default di.annotate(
   (data)=>
     (params)=> {
       return new RxComponent(Test, {list: data}, {}, {name: params.name});
