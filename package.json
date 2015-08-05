@@ -6,12 +6,12 @@
     "node": ">=0.12.0"
   },
   "scripts": {
-    "dev-server": "babel-node -- node_modules/.bin/webpack-dev-server --config webpack-dev-server.config.js --progress --colors --port 2992 --inline",
-    "hot-dev-server": "babel-node -- node_modules/.bin/webpack-dev-server --config webpack-hot-dev-server.config.js --hot --progress --colors --port 2992 --inline",
-    "build": "babel-node -- node_modules/.bin/webpack --config webpack-production.config.js --progress --profile --colors",
-    "watch-prerender": "babel-node -- node_modules/.bin/webpack --watch --config webpack-dev-prerender.config --progress --profile --colors",
-    "server": "pm2 ./build/server/server.js",
-    "test": "babel-node -- node_modules/.bin/karma start",
+    "dev-server": "babel-node -- ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack-dev-server.config.js --progress --colors --port 2992 --inline",
+    "hot-dev-server": "babel-node -- ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack-hot-dev-server.config.js --hot --progress --colors --port 2992 --inline",
+    "build": "babel-node -- ./node_modules/webpack/bin/webpack.js --config webpack-production.config.js --progress --profile --colors",
+    "watch-prerender": "babel-node -- ./node_modules/webpack/bin/webpack.js --watch --config webpack-dev-prerender.config --progress --profile --colors",
+    "server": "pm2-dev ./build/server/server.js",
+    "test": "babel-node -- ./node_modules/karma-cli/bin/karma start",
     "lint": "eslint ./src/"
   },
   "description": "Project template for building isomorphic widgets using reactjs",
