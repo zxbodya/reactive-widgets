@@ -20,7 +20,7 @@ Object.keys(bootstrapData)
         Rx.Observable
           .return(registry[component])
           .map(token=>injector.get(token))
-          .switchMap(component=>component(params))
+          .flatMapLatest(component=>component(params))
           .distinctUntilChanged()
           .catch(rxComponentErrorHandler)
           .subscribe(ReactComponent=> {

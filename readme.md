@@ -38,8 +38,7 @@ For now, application includes following:
 1. start webpack dev server for client-side bundle `npm run dev-server`(it will watch for changes and automatically recompile scripts and reload page)
 2. start webpack watcher for server bundle `npm run watch-prerender`
 3. preprender server, using pm2:
-  * start `pm2 start --watch --name widgets ./build/server/server.js` (it will automatically watch for changes in compiled scrip and reload)
-  * stop `pm2 delete widgets`
+  `pm2-dev ./build/server/server.js` (it will automatically watch for changes in compiled scrip and reload)
 4. test it `npm run test`
 5. lint it `npm run lint`
 

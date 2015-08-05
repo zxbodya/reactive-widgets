@@ -48,7 +48,7 @@ app.post('/render', function (req, res) {
       results[id] = Rx.Observable
         .return(registry[component])
         .map(token=>injector.get(token))
-        .switchMap(component=>component(params))
+        .flatMapLatest(component=>component(params))
         .first()
         .catch(rxComponentErrorHandler)
         .map(ReactComponent=>React.renderToString(<ReactComponent/>))
