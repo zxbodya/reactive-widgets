@@ -10,6 +10,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 import di from './../di';
 
 const appInjector = new di.Injector();
@@ -51,9 +52,9 @@ app.post('/render', function (req, res) {
         .flatMapLatest(component=>component(params))
         .first()
         .catch(rxComponentErrorHandler)
-        .map(ReactComponent=>React.renderToString(<ReactComponent/>))
+        .map(ReactComponent=>ReactDOMServer.renderToString(<ReactComponent/>))
         .catch((e)=>rxComponentErrorHandler(e)
-          .map(ReactComponent=>React.renderToString(<ReactComponent/>)));
+          .map(ReactComponent=>ReactDOMServer.renderToString(<ReactComponent/>)));
     } else {
       results[id] = Rx.Observable.return('Error: Component not found in registry');
     }

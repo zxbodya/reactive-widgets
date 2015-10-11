@@ -1,5 +1,6 @@
 import Rx from 'rx';
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import di from './../di';
 const injector = new di.Injector();
@@ -24,7 +25,7 @@ Object.keys(bootstrapData)
           .distinctUntilChanged()
           .catch(rxComponentErrorHandler)
           .subscribe(ReactComponent=> {
-            React.render(<ReactComponent/>, element);
+            ReactDOM.render(<ReactComponent/>, element);
           });
       }
     }
