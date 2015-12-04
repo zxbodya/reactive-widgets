@@ -2,7 +2,7 @@ import Rx from 'rx';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import di from './../di';
+import di from 'di1';
 const injector = new di.Injector();
 
 import rxComponentErrorHandler from '../utils/rxComponentErrorHandler';

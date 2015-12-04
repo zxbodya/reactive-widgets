@@ -1,4 +1,4 @@
-import di from '../di';
+import di from 'di1';
 import RxComponent from '../utils/RxComponent';
 
 import Test from '../views/Test';

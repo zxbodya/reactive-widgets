@@ -1,4 +1,4 @@
-import di from './../di';
+import di from 'di1';
 import {Observable} from 'rx';
 
 import superagent from 'superagent';

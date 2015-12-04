@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import di from './../di';
+import di from 'di1';
 
 const appInjector = new di.Injector();
 
