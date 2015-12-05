@@ -57,6 +57,8 @@
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
     "rx": "^4.0.0",
+    "rx-combine-latest-obj": "^1.0.2",
+    "rx-react-container": "0.0.3",
     "superagent": "^1.2.0"
   }
 }

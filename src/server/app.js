@@ -19,11 +19,11 @@ appInjector.provide(require('../apiUrl'), ()=> {
   return 'http://127.0.0.1:3000';
 });
 
-import observableObject from './../utils/observableObject';
+import combineLatestObj from 'rx-combine-latest-obj';
 import registry from '../registry';
 import rxComponentErrorHandler from '../utils/rxComponentErrorHandler';
 
-app.get('/data', function (req, res) {
+app.get('/data', function(req, res) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'X-Requested-With');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -37,43 +37,43 @@ app.get('/data', function (req, res) {
   ]);
 });
 
-app.post('/render', function (req, res) {
+app.post('/render', function(req, res) {
   const injector = appInjector.createChild();
 
   const bootstrapData = req.body || {};
   const results = {};
 
   Object.keys(bootstrapData).forEach(id=> {
-    let {component, params} = bootstrapData[id];
-    if (component in registry) {
+    let {component:componentName, params} = bootstrapData[id];
+    if (componentName in registry) {
       results[id] = Rx.Observable
-        .return(registry[component])
+        .return(registry[componentName])
         .map(token=>injector.get(token))
         .flatMapLatest(component=>component(params))
         .first()
         .catch(rxComponentErrorHandler)
-        .map(ReactComponent=>ReactDOMServer.renderToString(<ReactComponent/>))
+        .map(renderFn=>ReactDOMServer.renderToString(renderFn()))
         .catch((e)=>rxComponentErrorHandler(e)
-          .map(ReactComponent=>ReactDOMServer.renderToString(<ReactComponent/>)));
+          .map(renderFn=>ReactDOMServer.renderToString(renderFn())));
     } else {
       results[id] = Rx.Observable.return('Error: Component not found in registry');
     }
   });
 
-  observableObject(results)
+  combineLatestObj(results)
     .first()
     .subscribe(
       renderedResults=>res.json(renderedResults),
 
       error=> {
-      console.log(error);
-      res.status(500).json({
-        error: 'Rendering error',
-        message: error.message,
-        stack: error.stack
-      });
-    }
-  );
+        console.log(error);
+        res.status(500).json({
+          error: 'Rendering error',
+          message: error.message,
+          stack: error.stack
+        });
+      }
+    );
 });
 
 export default app;

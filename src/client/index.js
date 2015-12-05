@@ -13,19 +13,18 @@ const bootstrapData = window.bootstrapData || {};
 
 Object.keys(bootstrapData)
   .forEach(elementId=> {
-    let {component, params} = bootstrapData[elementId];
+    let {component:componentName, params} = bootstrapData[elementId];
 
     let element = document.getElementById(elementId);
     if (element) {
-      if (component in registry) {
+      if (componentName in registry) {
         Rx.Observable
-          .return(registry[component])
+          .return(registry[componentName])
           .map(token=>injector.get(token))
           .flatMapLatest(component=>component(params))
-          .distinctUntilChanged()
           .catch(rxComponentErrorHandler)
-          .subscribe(ReactComponent=> {
-            ReactDOM.render(<ReactComponent/>, element);
+          .subscribe(renderFn=> {
+            ReactDOM.render(renderFn(), element);
           });
       }
     }
