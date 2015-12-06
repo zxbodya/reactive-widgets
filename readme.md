@@ -15,8 +15,8 @@ It is build on top of following great projects:
   
 For now, application includes following:
  
- * Utility class RxComponent, to render and combine react components asynchronously in reactive way([a gist about it](https://gist.github.com/zxbodya/20c63681d45a049df3fc))
- * DI Container, inspire by https://github.com/angular/di.js but a lot simplified
+ * [rx-react-container](https://github.com/zxbodya/rx-react-container) - Allows to use React as a view layer for RxJS application, and to wait for required data before first rendering.
+ * [di1](https://github.com/zxbodya/di1) DI Container, inspired by https://github.com/angular/di.js but a lot simplified
  * Application for server side components rendering
  * Example of PHP application that uses components
  * Simple widget example
