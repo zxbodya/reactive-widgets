@@ -1,7 +1,10 @@
 import makeWebpackConfig from './make-webpack-config';
-export default makeWebpackConfig({
-    prerender: true,
-    devtool: 'inline-source-map',
-    sourceMapSupport: true,
-    debug: true
-  });
+const config = makeWebpackConfig({
+  prerender: true,
+  devtool: 'inline-source-map',
+  sourceMapSupport: true,
+  debug: true,
+});
+
+export default config;
+module.exports = config;

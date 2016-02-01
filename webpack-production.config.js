@@ -1,13 +1,17 @@
 import makeWebpackConfig from './make-webpack-config';
-export default [
+
+const config = [
   makeWebpackConfig({
     // commonsChunk: true,
     longTermCaching: true,
-    //separateStylesheet: true,
+    separateStylesheet: true,
     minimize: true,
-    devtool: 'source-map'
+    devtool: 'source-map',
   }),
   makeWebpackConfig({
-    prerender: true
-  })
+    prerender: true,
+  }),
 ];
+
+export default config;
+module.exports = config;

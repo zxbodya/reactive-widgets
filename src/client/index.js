@@ -1,5 +1,4 @@
 import Rx from 'rx';
-import React from 'react';
 import ReactDOM from 'react-dom';
 
 import di from 'di1';
@@ -13,9 +12,9 @@ const bootstrapData = window.bootstrapData || {};
 
 Object.keys(bootstrapData)
   .forEach(elementId=> {
-    let {component:componentName, params} = bootstrapData[elementId];
+    const {component: componentName, params} = bootstrapData[elementId];
 
-    let element = document.getElementById(elementId);
+    const element = document.getElementById(elementId);
     if (element) {
       if (componentName in registry) {
         Rx.Observable

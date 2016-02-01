@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 
 class Test extends Component {
   render() {
-    let items = this.props.list.map((item, i)=>(
+    const items = this.props.list.map((item, i)=>(
       <li key={i}>{item.name}</li>
     ));
     return (
@@ -16,7 +16,7 @@ class Test extends Component {
 
 Test.propTypes = {
   name: PropTypes.string.isRequired,
-  list: PropTypes.array.isRequired
+  list: PropTypes.array.isRequired,
 };
 
 export default Test;

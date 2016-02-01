@@ -4,6 +4,8 @@ import {Observable} from 'rx';
 import superagent from 'superagent';
 import promiseFromSuperAgent from '../utils/promiseFromSuperAgent';
 
+import apiUrlToken from '../apiUrl';
+
 export default di.annotate(
   (apiUrl)=> {
     const load = ()=> promiseFromSuperAgent(
@@ -13,5 +15,5 @@ export default di.annotate(
 
     return Observable.defer(load).shareReplay();
   },
-  require('../apiUrl')
+  apiUrlToken
 );

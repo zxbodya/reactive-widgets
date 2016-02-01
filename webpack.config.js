@@ -1,2 +1,4 @@
 import makeWebpackConfig from './make-webpack-config';
-export default makeWebpackConfig({});
+const config = makeWebpackConfig({});
+export default config;
+module.exports = config;

@@ -1,88 +1,15 @@
 {
+  "extends": "airbnb",
   "env": {
     "browser": true,
+    "jasmine": true,
     "node": true
   },
   "ecmaFeatures": {
-    // enable arrow functions
-    "arrowFunctions": true,
-    // enable binary literals
-    "binaryLiterals": true,
-    // enable let and const (aka block bindings)
-    "blockBindings": true,
-    // enable classes
-    "classes": true,
-    // enable default function parameters
-    "defaultParams": true,
-    // enable destructuring
-    "destructuring": true,
-    // enable for-of loops
-    "forOf": true,
-    // enable generators
-    "generators": true,
-    // enable modules and global strict mode
-    "modules": true,
-    // enable computed object literal property names
-    "objectLiteralComputedProperties": true,
-    // enable duplicate object literal properties in strict mode
-    "objectLiteralDuplicateProperties": true,
-    // enable object literal shorthand methods
-    "objectLiteralShorthandMethods": true,
-    // enable object literal shorthand properties
-    "objectLiteralShorthandProperties": true,
-    // enable octal literals
-    "octalLiterals": true,
-    // enable the regular expression u flag
-    "regexUFlag": true,
-    // enable the regular expression y flag
-    "regexYFlag": true,
     // enable the rest parameters
-    "restParams": true,
-    // enable the spread operator
-    "spread": true,
-    // enable super references inside of functions
-    "superInFunctions": true,
-    // enable template strings
-    "templateStrings": true,
-    // enable code point escapes
-    "unicodeCodePointEscapes": true,
-    // allow return statements in the global scope
-    "globalReturn": true,
-    // enable JSX
-    "jsx": true,
-    "jsx-quotes": 1
+    "restParams": true
   },
-  "rules": {
-    "quotes": [
-      2,
-      "single"
-    ],
-    "no-underscore-dangle": 1,
-    "dot-notation": 1,
-    "new-cap": 1,
-    "no-shadow": 1,
-    "no-process-exit": 1,
-    // React rules
-
-    "react/display-name": 0,
-    "react/jsx-boolean-value": 1,
-    "react/jsx-no-undef": 1,
-    // todo:
-    "react/jsx-sort-props": 0,
-    // todo:
-    "react/jsx-sort-prop-types": 0,
-    "react/jsx-uses-react": 1,
-    "react/jsx-uses-vars": 1,
-    "react/no-did-mount-set-state": 1,
-    "react/no-did-update-set-state": 1,
-    "react/no-multi-comp": 1,
-    "react/no-unknown-property": 1,
-    "react/prop-types": 1,
-    "react/react-in-jsx-scope": 1,
-    "react/self-closing-comp": 1,
-    "react/wrap-multilines": 1
-  },
-  "plugins": [
-    "react"
-  ]
+  "rules":{
+    "indent": [2, 2, {"SwitchCase": 1}]
+  }
 }
