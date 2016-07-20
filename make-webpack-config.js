@@ -1,8 +1,8 @@
-import path from 'path';
-import webpack from 'webpack';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+const path = require('path');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-export default function(options) {
+module.exports = function (options) {
   let entry;
 
   if (options.prerender) {
@@ -16,15 +16,15 @@ export default function(options) {
   }
 
   const defaultLoaders = [
-    {test: /\.coffee$/, loaders: ['coffee-redux-loader']},
-    {test: /\.json5$/, loaders: ['json5-loader']},
-    {test: /\.txt$/, loaders: ['raw-loader']},
-    {test: /\.(png|jpg|jpeg|gif|svg)$/, loaders: ['url-loader?limit=10000']},
+    { test: /\.coffee$/, loaders: ['coffee-redux-loader'] },
+    { test: /\.json5$/, loaders: ['json5-loader'] },
+    { test: /\.txt$/, loaders: ['raw-loader'] },
+    { test: /\.(png|jpg|jpeg|gif|svg)$/, loaders: ['url-loader?limit=10000'] },
     // {test: /\.(woff|woff2)$/, loaders: ['url-loader?limit=100000']},
     // {test: /\.(ttf|eot)$/, loaders: ['file-loader']},
-    {test: /\.(wav|mp3)$/, loaders: ['file-loader']},
-    {test: /\.html$/, loaders: ['html-loader']},
-    {test: /\.(md|markdown)$/, loaders: ['html-loader', 'markdown-loader']},
+    { test: /\.(wav|mp3)$/, loaders: ['file-loader'] },
+    { test: /\.html$/, loaders: ['html-loader'] },
+    { test: /\.(md|markdown)$/, loaders: ['html-loader', 'markdown-loader'] },
 
     // font awesome
     {
@@ -49,11 +49,11 @@ export default function(options) {
     },
   ];
   let stylesheetLoaders = [
-    {test: /\.css$/, loaders: ['css-loader!postcss-loader']},
-    {test: /\.less$/, loaders: ['css-loader!postcss-loader!less-loader']},
-    {test: /\.styl$/, loaders: ['css-loader!postcss-loader!stylus-loader']},
-    {test: /\.scss$/, loaders: ['css-loader!postcss-loader!sass-loader?sourceMap']},
-    {test: /\.sass$/, loaders: ['css-loader!postcss-loader!sass-loader?sourceMap&indentedSyntax']},
+    { test: /\.css$/, loaders: ['css-loader!postcss-loader'] },
+    { test: /\.less$/, loaders: ['css-loader!postcss-loader!less-loader'] },
+    { test: /\.styl$/, loaders: ['css-loader!postcss-loader!stylus-loader'] },
+    { test: /\.scss$/, loaders: ['css-loader!postcss-loader!sass-loader?sourceMap'] },
+    { test: /\.sass$/, loaders: ['css-loader!postcss-loader!sass-loader?sourceMap&indentedSyntax'] },
   ];
 
   const alias = {};
@@ -62,15 +62,22 @@ export default function(options) {
   const modulesDirectories = ['web_modules', 'node_modules'];
   const extensions = ['', '.web.js', '.js', '.jsx'];
   const root = path.join(__dirname, 'app');
+
+  const host = process.env.HOST || 'localhost';
+  const devPort = process.env.DEV_SERVER_PORT || 2992;
+
   const publicPath = options.devServer ?
-    'http://localhost:2992/_assets/' :
+    `http://${host}:${devPort}/_assets/` :
     '/_assets/';
 
   const output = {
     path: path.join(__dirname, 'build', options.prerender ? 'server' : 'public'),
-    publicPath: publicPath,
+    publicPath,
     filename: '[name].js' + (options.longTermCaching && !options.prerender ? '?[chunkhash]' : ''),
-    chunkFilename: (options.devServer ? '[id].js' : '[name].js') + (options.longTermCaching && !options.prerender ? '?[chunkhash]' : ''),
+    chunkFilename: (
+      (options.devServer ? '[id].js' : '[name].js')
+      + (options.longTermCaching && !options.prerender ? '?[chunkhash]' : '')
+    ),
     sourceMapFilename: 'debugging/[file].map',
     libraryTarget: options.prerender ? 'commonjs2' : undefined,
     pathinfo: options.debug,
@@ -98,7 +105,7 @@ export default function(options) {
   ];
   if (options.prerender) {
     aliasLoader['react-proxy$'] = 'react-proxy/unavailable';
-    const nodeModules = require('fs').readdirSync('node_modules').filter(x=>x !== '.bin');
+    const nodeModules = require('fs').readdirSync('node_modules').filter(x => x !== '.bin');
 
     externals.push(
       {
@@ -106,20 +113,27 @@ export default function(options) {
       },
       ...nodeModules
     );
-    plugins.push(new webpack.optimize.LimitChunkCountPlugin({maxChunks: 1}));
+
+    plugins.push(new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }));
     if (options.sourceMapSupport) {
       plugins.push(
         new webpack.BannerPlugin('require("source-map-support").install();',
-          {raw: true, entryOnly: false})
+          { raw: true, entryOnly: false })
       );
     }
   }
   if (options.commonsChunk) {
-    plugins.push(new webpack.optimize.CommonsChunkPlugin('commons', 'commons.js' + (options.longTermCaching && !options.prerender ? '?[chunkhash]' : '')));
+    plugins.push(
+      new webpack.optimize.CommonsChunkPlugin(
+        'commons',
+        'commons.js' + (options.longTermCaching && !options.prerender ? '?[chunkhash]' : '')
+      )
+    );
   }
 
 
-  stylesheetLoaders = stylesheetLoaders.map((loader) => {
+  stylesheetLoaders = stylesheetLoaders.map((loaderIn) => {
+    const loader = Object.assign({}, loaderIn);
     if (Array.isArray(loader.loaders)) {
       loader.loaders = loader.loaders.join('!');
     }
@@ -128,7 +142,7 @@ export default function(options) {
     } else if (options.separateStylesheet) {
       loader.loaders = ExtractTextPlugin.extract('style-loader', loader.loaders);
     } else {
-      loader.loaders = 'style-loader!' + loader.loaders;
+      loader.loaders = `style-loader!${loader.loaders}`;
     }
     loader.loaders = loader.loaders.split('!');
     return loader;
@@ -137,6 +151,7 @@ export default function(options) {
   if (options.separateStylesheet && !options.prerender) {
     plugins.push(new ExtractTextPlugin('[name].css' + (options.longTermCaching ? '?[contenthash]' : '')));
   }
+
   if (options.minimize) {
     plugins.push(
       new webpack.optimize.UglifyJsPlugin({
@@ -146,25 +161,31 @@ export default function(options) {
       }),
       new webpack.optimize.DedupePlugin(),
       new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify('production'),
-        },
+        'process.env.NODE_ENV': JSON.stringify('production'),
       }),
       new webpack.NoErrorsPlugin()
     );
+  } else {
+    if (!options.prerender) {
+      plugins.push(
+        new webpack.DefinePlugin({
+          'process.env.NODE_ENV': JSON.stringify('development'),
+        })
+      );
+    }
   }
 
   return {
-    entry: entry,
-    output: output,
+    entry,
+    output,
     target: options.prerender ? 'node' : 'web',
     module: {
       loaders: [
         {
           test: /\.jsx?$/,
           loaders: options.hotComponents
-            ? ['react-hot', 'babel?presets[]=react&presets[]=es2015&plugins[]=transform-runtime&plugins[]=transform-object-rest-spread']
-            : ['babel?presets[]=react&presets[]=es2015&plugins[]=transform-runtime&plugins[]=transform-object-rest-spread'],
+            ? ['react-hot', 'babel?presets[]=react&presets[]=es2015&plugins[]=transform-runtime']
+            : ['babel?presets[]=react&presets[]=es2015&plugins[]=transform-runtime'],
           exclude: /node_modules/,
         },
       ]
@@ -172,7 +193,7 @@ export default function(options) {
         .concat(stylesheetLoaders),
     },
     postcss() {
-      return [require('autoprefixer')({browsers: ['last 1 version']})];
+      return [require('autoprefixer')({ browsers: ['last 1 version'] })];
     },
     devtool: options.devtool,
     debug: options.debug,
@@ -180,14 +201,14 @@ export default function(options) {
       root: path.join(__dirname, 'node_modules'),
       alias: aliasLoader,
     },
-    externals: externals,
+    externals,
     resolve: {
-      root: root,
-      modulesDirectories: modulesDirectories,
-      extensions: extensions,
-      alias: alias,
+      root,
+      modulesDirectories,
+      extensions,
+      alias,
     },
-    plugins: plugins,
+    plugins,
     devServer: {
       stats: {
         cached: false,
@@ -195,4 +216,4 @@ export default function(options) {
       },
     },
   };
-}
+};

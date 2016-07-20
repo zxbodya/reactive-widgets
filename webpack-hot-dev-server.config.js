@@ -1,4 +1,4 @@
-import makeWebpackConfig from './make-webpack-config';
+const makeWebpackConfig = require('./make-webpack-config');
 
 const config = makeWebpackConfig({
   devServer: true,
@@ -6,5 +6,5 @@ const config = makeWebpackConfig({
   devtool: 'eval',
   debug: true,
 });
-export default config;
+
 module.exports = config;

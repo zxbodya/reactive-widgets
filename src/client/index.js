@@ -11,19 +11,23 @@ import registry from '../registry';
 const bootstrapData = window.bootstrapData || {};
 
 Object.keys(bootstrapData)
-  .forEach(elementId=> {
-    const {component: componentName, params} = bootstrapData[elementId];
+  .forEach(elementId => {
+    const { component: componentName, params } = bootstrapData[elementId];
 
     const element = document.getElementById(elementId);
     if (element) {
       if (componentName in registry) {
         Rx.Observable
           .return(registry[componentName])
-          .map(token=>injector.get(token))
-          .flatMapLatest(component=>component(params))
-          .catch(rxComponentErrorHandler)
-          .subscribe(renderFn=> {
-            ReactDOM.render(renderFn(), element);
+          .map(token => injector.get(token))
+          .flatMapLatest(component => component(params))
+          .map(renderFn => renderFn())
+          .catch(e =>
+            rxComponentErrorHandler(e)
+              .map(renderFn => renderFn())
+          )
+          .subscribe(virtualDOM => {
+            ReactDOM.render(virtualDOM, element);
           });
       }
     }

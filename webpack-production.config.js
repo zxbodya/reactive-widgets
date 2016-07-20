@@ -1,4 +1,5 @@
-import makeWebpackConfig from './make-webpack-config';
+const makeWebpackConfig = require('./make-webpack-config');
+
 
 const config = [
   makeWebpackConfig({
@@ -6,12 +7,11 @@ const config = [
     longTermCaching: true,
     separateStylesheet: true,
     minimize: true,
-    devtool: 'source-map',
+    // devtool: "source-map",
   }),
   makeWebpackConfig({
     prerender: true,
   }),
 ];
 
-export default config;
 module.exports = config;
