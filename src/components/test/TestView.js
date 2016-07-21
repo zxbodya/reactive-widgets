@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 class Test extends Component {
   render() {
-    const items = this.props.list.map((item, i)=>(
+    const items = this.props.list.map((item, i) => (
       <li key={i}>{item.name}</li>
     ));
     return (

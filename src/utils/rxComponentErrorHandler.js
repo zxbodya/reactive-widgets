@@ -1,14 +1,12 @@
 import React from 'react';
 import { Observable } from 'rx';
 
-export default (error)=>
+export default (error) =>
   Observable.return(
-    function () {
-      return (
-        <div>
-          <p>{error.message}</p>
-          <pre>{error.stack}</pre>
-        </div>
-      );
-    }
+    () => (
+      <div>
+        <p>{error.message}</p>
+        <pre>{error.stack}</pre>
+      </div>
+    )
   );

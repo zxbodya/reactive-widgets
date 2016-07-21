@@ -1,5 +1,5 @@
-import test from './components/test';
+import test from './components/test/testContainer';
 
 export default {
-  test: test,
+  test,
 };
