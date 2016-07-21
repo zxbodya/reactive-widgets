@@ -90,9 +90,9 @@ devServer.listen(devPort, host, () => {
 });
 
 
-const withPrerender = process.argv.indexOf('--with-prerender') !== -1;
+// const withPrerender = process.argv.indexOf('--with-prerender') !== -1;
 
-delete backendConfig.entry[withPrerender ? 'dev' : 'prod'];
+// delete backendConfig.entry[withPrerender ? 'dev' : 'prod'];
 
 const nodemonStart$ = new Subject();
 
@@ -102,12 +102,12 @@ function startServer() {
     execMap: {
       js: 'node',
     },
-    script: path.join(__dirname, withPrerender ? 'build/server/prod' : 'build/server/dev'),
+    script: path.join(__dirname, 'build/server/server'),
     ignore: ['*'],
     watch: [],
     ext: 'noop',
     stdin: false,
-    stdout: false,
+    stdout: true,
   })
     .on('start', () => {
       nodemonStart$.onNext('start');
