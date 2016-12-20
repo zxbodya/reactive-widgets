@@ -5,12 +5,12 @@ Application starter template, for implementing isomorphic widgets(same code for 
 It is build on top of following great projects:
  
  * [React](http://facebook.github.io/react/) for a view layer 
- * [RxJS](https://github.com/Reactive-Extensions/RxJS) for data layer, and composing asynchronous components
+ * [RxJS](https://github.com/ReactiveX/RxJS) for data layer, and composing asynchronous components
  * [Webpack](http://webpack.github.io/) to bundle client and server side scripts
  * [Babel](babeljs.io) to use next generation JavaScript, today.
  * [Express.JS](http://expressjs.com) for serving prerender application
  * [SuperAgent](https://visionmedia.github.io/superagent/) for AJAX requests to API 
- * [Karma](http://karma-runner.github.io/)  with [Jasmine](jasmine.github.io) for tests
+ * [Jest](http://facebook.github.io/jest/) for tests
  * [ESLint](http://eslint.org/) to watch for coding style issues
  * [Nodemon](http://nodemon.io/) to reload rendering server in dev mode
   
@@ -30,19 +30,29 @@ For now, application includes following:
 
 ### Development environment setup
 
-
-1. install dependencies using npm
+0. Check your Node.js version - it should be version 6 or later
+1. Install dependencies using npm (or yarn)
 2. start server app, with automatic recompile and reload when something changes
-    - `npm run watch-dev`
-    - `npm run watch-prod`, if you need server-side rendering
-3. open this url in your browser: `http://localhost:8080/`
-
-(there is alternative options, to start everything separately - check `package.json` for more details)
+    - `npm run dev`
+3. open this url in your browser: `http://localhost:4000/` (php server should be started at port 4000 to make this working, see instructions below) 
 
 To customize host and ports used by application - use environment variables:
-- `HOST` - host where application is running, `localhost` by default 
-- `DEV_SERVER_PORT` - port used by dev server, `2992` by default 
-- `PORT` - port user by application, `8080` by default 
+
+- `DEV_SERVER_PORT` - port used by dev server, `2992` by default
+- `DEV_SERVER_HOST` - host where dev server is running, `localhost` by default
+
+Same thing about app itself:
+
+- `APP_SERVER_HOST` - host where application is running, `localhost` by default (address where app is accessible) 
+- `APP_SERVER_PORT` - port user by application, `3000` by default
+
+**if you have different application host and port different than above - be sure to specify them in environment**
+
+Also you can enable some other things for dev-server by environment variables
+ 
+- `HOT=1` to enable hot reload for client side  
+
+For setting those variables - you can create `.env` file at project root.
 
 
 1. To run unit tests: `npm run test`

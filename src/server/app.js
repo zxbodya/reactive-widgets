@@ -1,7 +1,14 @@
-import Rx from 'rx';
+import { Observable } from 'rxjs';
 import express from 'express';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
+
+import ReactDOMServer from 'react-dom/server';
+import di from 'di1';
+
+import { combineLatestObj } from 'rx-react-container/lib/combineLatestObj';
+import registry from '../registry';
+import rxComponentErrorHandler from '../utils/rxComponentErrorHandler';
 
 const app = express();
 
@@ -9,16 +16,10 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-import ReactDOMServer from 'react-dom/server';
-import di from 'di1';
 
 const appInjector = new di.Injector();
-
 appInjector.provide(require('../apiUrl'), () => 'http://127.0.0.1:3000');
 
-import combineLatestObj from 'rx-combine-latest-obj';
-import registry from '../registry';
-import rxComponentErrorHandler from '../utils/rxComponentErrorHandler';
 
 app.get('/data', (req, res) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -43,10 +44,10 @@ app.post('/render', (req, res) => {
   Object.keys(bootstrapData).forEach(id => {
     const { component: componentName, params } = bootstrapData[id];
     if (componentName in registry) {
-      results[id] = Rx.Observable
-        .return(registry[componentName])
+      results[id] = Observable
+        .of(registry[componentName])
         .map(token => injector.get(token))
-        .flatMapLatest(component => component(params))
+        .switchMap(component => component(params))
         .first()
         .map(renderFn => renderFn())
         .catch(e =>
@@ -55,7 +56,7 @@ app.post('/render', (req, res) => {
         )
         .map(virtualDOM => ReactDOMServer.renderToString(virtualDOM));
     } else {
-      results[id] = Rx.Observable.return('Error: Component not found in registry');
+      results[id] = Observable.of('Error: Component not found in registry');
     }
   });
 

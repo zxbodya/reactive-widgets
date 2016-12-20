@@ -1,5 +1,5 @@
 import di from 'di1';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 import superagent from 'superagent';
 
@@ -9,10 +9,10 @@ export default di.annotate(
   apiUrl => {
     const load = () => Observable.defer(() => {
       const req = superagent.get(`${apiUrl}/data`);
-      return Observable.fromNodeCallback(req.end, req, res => res.body)();
+      return Observable.bindNodeCallback(req.end.bind(req), res => res.body)();
     });
 
-    return load().shareReplay(1);
+    return load().publishReplay(1).refCount();
   },
   apiUrlToken
 );

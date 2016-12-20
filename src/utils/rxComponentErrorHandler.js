@@ -1,8 +1,8 @@
 import React from 'react';
-import { Observable } from 'rx';
+import { Observable } from 'rxjs';
 
 export default (error) =>
-  Observable.return(
+  Observable.of(
     () => (
       <div>
         <p>{error.message}</p>

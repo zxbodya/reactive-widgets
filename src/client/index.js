@@ -1,12 +1,11 @@
-import Rx from 'rx';
+import { Observable } from 'rxjs';
 import ReactDOM from 'react-dom';
-
 import di from 'di1';
-const injector = new di.Injector();
 
 import rxComponentErrorHandler from '../utils/rxComponentErrorHandler';
-
 import registry from '../registry';
+
+const injector = new di.Injector();
 
 const bootstrapData = window.bootstrapData || {};
 
@@ -17,10 +16,10 @@ Object.keys(bootstrapData)
     const element = document.getElementById(elementId);
     if (element) {
       if (componentName in registry) {
-        Rx.Observable
-          .return(registry[componentName])
+        Observable
+          .of(registry[componentName])
           .map(token => injector.get(token))
-          .flatMapLatest(component => component(params))
+          .switchMap(component => component(params))
           .map(renderFn => renderFn())
           .catch(e =>
             rxComponentErrorHandler(e)

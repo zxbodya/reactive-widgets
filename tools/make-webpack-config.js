@@ -1,38 +1,31 @@
 const path = require('path');
+const fs = require('fs');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const autoPrefixer = require('autoprefixer');
 
-module.exports = function (options) {
+module.exports = function makeWebpackConfig(options) {
   let entry;
 
-  if (options.prerender) {
+  if (options.isServer) {
     entry = {
-      server: './src/server/bin/www'
+      server: './src/server/bin/www',
     };
   } else {
     entry = {
-      main: './src/client'
+      main: './src/client/index',
     };
   }
 
   const defaultLoaders = [
-    { test: /\.coffee$/, loaders: ['coffee-redux-loader'] },
     { test: /\.json5$/, loaders: ['json5-loader'] },
     { test: /\.txt$/, loaders: ['raw-loader'] },
     { test: /\.(png|jpg|jpeg|gif|svg)$/, loaders: ['url-loader?limit=10000'] },
-    // {test: /\.(woff|woff2)$/, loaders: ['url-loader?limit=100000']},
-    // {test: /\.(ttf|eot)$/, loaders: ['file-loader']},
-    { test: /\.(wav|mp3)$/, loaders: ['file-loader'] },
     { test: /\.html$/, loaders: ['html-loader'] },
-    { test: /\.(md|markdown)$/, loaders: ['html-loader', 'markdown-loader'] },
 
     // font awesome
     {
-      test: /\.woff(\?v=\d+\.\d+\.\d+|\?.*)?$/,
-      loader: 'url?limit=10000&mimetype=application/font-woff',
-    },
-    {
-      test: /\.woff2(\?v=\d+\.\d+\.\d+|\?.*)?$/,
+      test: /\.woff2?(\?v=\d+\.\d+\.\d+|\?.*)?$/,
       loader: 'url?limit=10000&mimetype=application/font-woff',
     },
     {
@@ -44,46 +37,39 @@ module.exports = function (options) {
       loader: 'file',
     },
     {
-      test: /\.svg(\?v=\d+\.\d+\.\d+|\?.*)?$/,
+      test: /\.svg(\?v=\d+\.\d+\.\d+|\?.*)$/,
       loader: 'url?limit=10000&mimetype=image/svg+xml',
     },
   ];
   let stylesheetLoaders = [
     { test: /\.css$/, loaders: ['css-loader!postcss-loader'] },
-    { test: /\.less$/, loaders: ['css-loader!postcss-loader!less-loader'] },
-    { test: /\.styl$/, loaders: ['css-loader!postcss-loader!stylus-loader'] },
     { test: /\.scss$/, loaders: ['css-loader!postcss-loader!sass-loader?sourceMap'] },
     { test: /\.sass$/, loaders: ['css-loader!postcss-loader!sass-loader?sourceMap&indentedSyntax'] },
   ];
 
-  const alias = {};
-  const aliasLoader = {};
-  const externals = [];
-  const modulesDirectories = ['web_modules', 'node_modules'];
-  const extensions = ['', '.web.js', '.js', '.jsx'];
-  const root = path.join(__dirname, 'app');
-
-  const host = process.env.HOST || 'localhost';
+  const devHost = process.env.DEV_SERVER_HOST || 'localhost';
   const devPort = process.env.DEV_SERVER_PORT || 2992;
 
   const publicPath = options.devServer ?
-    `http://${host}:${devPort}/_assets/` :
+    `http://${devHost}:${devPort}/_assets/` :
     '/_assets/';
 
   const output = {
-    path: path.join(__dirname, 'build', options.prerender ? 'server' : 'public'),
+    path: options.isServer
+      ? path.join(__dirname, '..', 'build', 'server')
+      : path.join(__dirname, '..', 'php', '_assets'),
     publicPath,
-    filename: '[name].js' + (options.longTermCaching && !options.prerender ? '?[chunkhash]' : ''),
+    filename: `[name].js${options.longTermCaching && !options.isServer ? '?[chunkhash]' : ''}`,
     chunkFilename: (
       (options.devServer ? '[id].js' : '[name].js')
-      + (options.longTermCaching && !options.prerender ? '?[chunkhash]' : '')
+      + (options.longTermCaching && !options.isServer ? '?[chunkhash]' : '')
     ),
     sourceMapFilename: 'debugging/[file].map',
-    libraryTarget: options.prerender ? 'commonjs2' : undefined,
+    libraryTarget: options.isServer ? 'commonjs2' : undefined,
     pathinfo: options.debug,
   };
   const excludeFromStats = [
-    /node_modules[\\\/]react(-router)?[\\\/]/,
+    /node_modules[\\/]react(-router)?[\\/]/,
   ];
   const plugins = [
     function statsPlugin() {
@@ -93,24 +79,28 @@ module.exports = function (options) {
           exclude: excludeFromStats,
         });
         jsonStats.publicPath = publicPath;
-        if (!options.prerender) {
-          require('fs').writeFileSync(path.join(__dirname, 'build', 'stats.json'), JSON.stringify(jsonStats));
+        if (!options.isServer) {
+          fs.writeFileSync(path.join(__dirname, '..', 'build', 'stats.json'), JSON.stringify(jsonStats));
         } else {
-          require('fs').writeFileSync(path.join(__dirname, 'build', 'server', 'stats.json'), JSON.stringify(jsonStats));
+          fs.writeFileSync(path.join(__dirname, '..', 'build', 'serverStats.json'), JSON.stringify(jsonStats));
         }
       });
     },
     new webpack.PrefetchPlugin('react'),
-    new webpack.PrefetchPlugin('react/lib/ReactComponentBrowserEnvironment'),
   ];
-  if (options.prerender) {
-    aliasLoader['react-proxy$'] = 'react-proxy/unavailable';
-    const nodeModules = require('fs').readdirSync('node_modules').filter(x => x !== '.bin');
 
+  const alias = {};
+  const aliasLoader = {};
+  const externals = [];
+
+  if (options.isServer) {
+    aliasLoader['react-proxy$'] = 'react-proxy/unavailable';
+    const nodeModules = fs.readdirSync(path.join(__dirname, '..', 'node_modules')).filter(x => x !== '.bin');
     externals.push(
       {
-        '../build/stats.json': 'commonjs ../stats.json',
+        //'../build/stats.json': 'commonjs ../stats.json',
       },
+      'react-dom/server',
       ...nodeModules
     );
 
@@ -122,11 +112,12 @@ module.exports = function (options) {
       );
     }
   }
+
   if (options.commonsChunk) {
     plugins.push(
       new webpack.optimize.CommonsChunkPlugin(
         'commons',
-        'commons.js' + (options.longTermCaching && !options.prerender ? '?[chunkhash]' : '')
+        `commons.js${options.longTermCaching && !options.isServer ? '?[chunkhash]' : ''}`
       )
     );
   }
@@ -137,7 +128,7 @@ module.exports = function (options) {
     if (Array.isArray(loader.loaders)) {
       loader.loaders = loader.loaders.join('!');
     }
-    if (options.prerender) {
+    if (options.isServer) {
       loader.loaders = 'null-loader';
     } else if (options.separateStylesheet) {
       loader.loaders = ExtractTextPlugin.extract('style-loader', loader.loaders);
@@ -148,9 +139,12 @@ module.exports = function (options) {
     return loader;
   });
 
-  if (options.separateStylesheet && !options.prerender) {
-    plugins.push(new ExtractTextPlugin('[name].css' + (options.longTermCaching ? '?[contenthash]' : '')));
+  if (options.separateStylesheet && !options.isServer) {
+    plugins.push(new ExtractTextPlugin(`[name].css${options.longTermCaching ? '?[contenthash]' : ''}`));
   }
+  const definitions = {
+    'process.env.NODE_ENV': options.debug ? JSON.stringify('development') : JSON.stringify('production'),
+  };
 
   if (options.minimize) {
     plugins.push(
@@ -160,52 +154,59 @@ module.exports = function (options) {
         },
       }),
       new webpack.optimize.DedupePlugin(),
-      new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify('production'),
-      }),
       new webpack.NoErrorsPlugin()
     );
+  }
+
+  plugins.push(
+    new webpack.DefinePlugin(definitions)
+  );
+
+  if (options.hotComponents) {
+    plugins.push(new webpack.HotModuleReplacementPlugin());
+  }
+
+  const babelLoader = {
+    test: /\.jsx?$/,
+    exclude: /node_modules/,
+  };
+  if (options.isServer) {
+    babelLoader.loader = 'babel';
+    babelLoader.query = {
+      presets: ['react'],
+      plugins: ['babel-plugin-transform-es2015-modules-commonjs'],
+      babelrc: false,
+    };
+  } else if (options.hotComponents) {
+    babelLoader.loaders = ['react-hot', 'babel'];
   } else {
-    if (!options.prerender) {
-      plugins.push(
-        new webpack.DefinePlugin({
-          'process.env.NODE_ENV': JSON.stringify('development'),
-        })
-      );
-    }
+    babelLoader.loader = 'babel';
   }
 
   return {
     entry,
     output,
-    target: options.prerender ? 'node' : 'web',
+    target: options.isServer ? 'node' : 'web',
     module: {
       loaders: [
-        {
-          test: /\.jsx?$/,
-          loaders: options.hotComponents
-            ? ['react-hot', 'babel?presets[]=react&presets[]=es2015&plugins[]=transform-runtime']
-            : ['babel?presets[]=react&presets[]=es2015&plugins[]=transform-runtime'],
-          exclude: /node_modules/,
-        },
+        babelLoader,
       ]
         .concat(defaultLoaders)
         .concat(stylesheetLoaders),
     },
     postcss() {
-      return [require('autoprefixer')({ browsers: ['last 1 version'] })];
+      return [autoPrefixer({ browsers: ['last 2 version'] })];
     },
     devtool: options.devtool,
     debug: options.debug,
     resolveLoader: {
-      root: path.join(__dirname, 'node_modules'),
+      root: path.join(__dirname, '..', 'node_modules'),
       alias: aliasLoader,
     },
     externals,
     resolve: {
-      root,
-      modulesDirectories,
-      extensions,
+      modulesDirectories: ['web_modules', 'node_modules'],
+      extensions: ['', '.web.js', '.js', '.jsx'],
       alias,
     },
     plugins,

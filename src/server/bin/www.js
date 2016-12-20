@@ -2,8 +2,8 @@
  * Module dependencies.
  */
 
-import app from '../app';
 import http from 'http';
+import app from '../app';
 
 /**
  * Normalize a port into a number, string, or false.
