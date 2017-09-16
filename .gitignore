@@ -1,3 +1,4 @@
 .idea
 /node_modules
-/php/_assets
+/public/_assets
+/build

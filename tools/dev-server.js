@@ -46,7 +46,7 @@ const devHost = process.env.DEV_SERVER_HOST || 'localhost';
 const devPort = process.env.DEV_SERVER_PORT || 2992;
 
 const appHost = process.env.APP_SERVER_HOST || 'localhost';
-const appPort = process.env.APP_SERVER_PORT || 3000;
+const appPort = process.env.APP_SERVER_PORT || 8080;
 
 const isHot = process.env.HOT === '1';
 
@@ -59,7 +59,7 @@ const backendConfig = require('./webpack-watch-server.config.js');
 const devClient = [`${require.resolve('webpack-dev-server/client/')}?${protocol}://${devHost}:${devPort}`];
 
 if (isHot) {
-  devClient.push(require.resolve('webpack/hot/only-dev-server'));
+  devClient.push(require.resolve('webpack/hot/dev-server'));
 }
 
 if (typeof devServerConfig.entry === 'object' && !Array.isArray(devServerConfig.entry)) {
@@ -84,6 +84,7 @@ const devServer = new WebpackDevServer(frontEndCompiler, {
   watchOptions: {
     aggregateTimeout: 300,
   },
+  headers: { 'Access-Control-Allow-Origin': '*' },
   publicPath: '/_assets/',
   stats: Object.assign({ colors: true }, devServerConfig.devServer.stats),
 });
@@ -99,6 +100,14 @@ devServer.sockWrite = (sockets, type, data) => {
 devServer.listen(devPort, devHost, () => {
 });
 
+const withSSR = process.env.SSR === '1';
+
+if (withSSR) {
+  delete backendConfig.entry.nossr;
+} else {
+  delete backendConfig.entry.ssr;
+}
+
 const nodemonStart$ = new Subject();
 
 function startServer() {
@@ -107,7 +116,7 @@ function startServer() {
     execMap: {
       js: 'node',
     },
-    script: path.join(__dirname, '..', 'build', 'server', 'server'),
+    script: path.join(__dirname, '..', 'server'),
     ignore: ['*'],
     watch: [],
     ext: 'noop',

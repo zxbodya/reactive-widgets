@@ -1,9 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class Test extends Component {
   render() {
-    const items = this.props.list.map((item, i) => (
-      <li key={i}>{item.name}</li>
+    const items = this.props.list.map((item) => (
+      <li key={item.name}>{item.name}</li>
     ));
     return (
       <div>

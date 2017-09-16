@@ -6,7 +6,7 @@ It is build on top of following great projects:
  
  * [React](http://facebook.github.io/react/) for a view layer 
  * [RxJS](https://github.com/ReactiveX/RxJS) for data layer, and composing asynchronous components
- * [Webpack](http://webpack.github.io/) to bundle client and server side scripts
+ * [Webpack](http://webpack.js.org/) to bundle client and server side scripts
  * [Babel](babeljs.io) to use next generation JavaScript, today.
  * [Express.JS](http://expressjs.com) for serving prerender application
  * [SuperAgent](https://visionmedia.github.io/superagent/) for AJAX requests to API 
@@ -25,7 +25,7 @@ For now, application includes following:
 ### Requirements
 
 * [nodejs](http://nodejs.org) You will need version 6 or above
-* PHP v5.4 for server side example and [composer](https://getcomposer.org/) to install dependencies 
+* PHP above v5.4 for server side example and [composer](https://getcomposer.org/) to install dependencies 
 
 
 ### Development environment setup
@@ -44,7 +44,7 @@ To customize host and ports used by application - use environment variables:
 Same thing about app itself:
 
 - `APP_SERVER_HOST` - host where application is running, `localhost` by default (address where app is accessible) 
-- `APP_SERVER_PORT` - port user by application, `3000` by default
+- `APP_SERVER_PORT` - port user by application, `8080` by default
 
 **if you have different application host and port different than above - be sure to specify them in environment**
 
@@ -66,7 +66,7 @@ For setting those variables - you can create `.env` file at project root.
 
 ### PHP server demo that will use implemented widgets
 
-example is in php folder, to try it:
+example is in public folder, to try it:
 
 1. `composer install` install dependencies, using composer
 2. start php built in server `php -S 127.0.0.1:4000`

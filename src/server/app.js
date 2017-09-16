@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Observable } from 'rxjs';
 import express from 'express';
 import logger from 'morgan';
@@ -6,7 +7,7 @@ import bodyParser from 'body-parser';
 import ReactDOMServer from 'react-dom/server';
 import di from 'di1';
 
-import { combineLatestObj } from 'rx-react-container/lib/combineLatestObj';
+import { combineLatestObj } from 'rx-react-container/src/combineLatestObj';
 import registry from '../registry';
 import rxComponentErrorHandler from '../utils/rxComponentErrorHandler';
 
@@ -18,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 const appInjector = new di.Injector();
-appInjector.provide(require('../apiUrl'), () => 'http://127.0.0.1:3000');
+appInjector.provide(require('../apiUrl'), () => 'http://127.0.0.1:8080');
 
 
 app.get('/data', (req, res) => {

@@ -6,10 +6,12 @@ const config = [
     longTermCaching: true,
     separateStylesheet: true,
     minimize: true,
-    // devtool: "source-map",
+    devtool: 'source-map',
   }),
   makeWebpackConfig({
     isServer: true,
+    sourceMapSupport: true,
+    devtool: 'source-map',
   }),
 ];
 
