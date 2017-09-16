@@ -1,5 +1,6 @@
 import React from 'react';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 
 export default (error) =>
   Observable.of(

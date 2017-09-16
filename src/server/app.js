@@ -1,5 +1,11 @@
 /* eslint-disable no-console */
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/first';
+
 import express from 'express';
 import logger from 'morgan';
 import bodyParser from 'body-parser';

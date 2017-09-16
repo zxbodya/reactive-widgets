@@ -9,7 +9,7 @@ It is build on top of following great projects:
  * [Webpack](http://webpack.js.org/) to bundle client and server side scripts
  * [Babel](babeljs.io) to use next generation JavaScript, today.
  * [Express.JS](http://expressjs.com) for serving prerender application
- * [SuperAgent](https://visionmedia.github.io/superagent/) for AJAX requests to API 
+ * [Axios](https://github.com/mzabriskie/axios) for AJAX requests to API 
  * [Jest](http://facebook.github.io/jest/) for tests
  * [ESLint](http://eslint.org/) to watch for coding style issues
  * [Nodemon](http://nodemon.io/) to reload rendering server in dev mode

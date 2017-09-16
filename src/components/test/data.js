@@ -1,17 +1,19 @@
 import di from 'di1';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/publishReplay';
+import 'rxjs/add/observable/defer';
 
-import superagent from 'superagent';
+import axios from 'axios';
 
 import apiUrlToken from '../../apiUrl';
 
 export default di.annotate(
   apiUrl => {
-    const load = () => Observable.defer(() => {
-      const req = superagent.get(`${apiUrl}/data`);
-      return Observable.bindNodeCallback(req.end.bind(req), res => res.body)();
-    });
-
+    const load = () => Observable
+      .defer(() => axios
+        .get(`${apiUrl}/data`)
+        .then(r => r.data)
+      );
     return load().publishReplay(1).refCount();
   },
   apiUrlToken
